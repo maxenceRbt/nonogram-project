@@ -42,3 +42,11 @@ def type_cellule(cell: Cellule) -> bool:
 
 #=============== DEBUT DU CODE ===================================
 
+def construireCellule() -> Cellule:
+    """
+    Construction d'une cellule non "découverte"
+
+    :return: Dictionnaire représentant une cellule
+    """
+    Cellule = {VALEUR: None}
+    return Cellule
