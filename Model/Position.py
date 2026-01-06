@@ -42,4 +42,105 @@ def type_position(position: Position) -> bool:
 
 #============== DEBUT DU CODE ============================
 
+def construirePosition() -> Position:
+    """
+    Fonction permettant de créer un dictionnaire de position avec pour chaque clé LIGNE et COLONNE, une valeur de 0
 
+    :return: Dictionnaire de type Position
+    """
+    pos = {LIGNE : 0, COLONNE: 0}
+    return pos
+
+def getLignePosition(pos: dict) -> int:
+    """
+    Fonction permettant d'obtenir le numéro de ligne d'une position
+
+    :param pos: dictionnaire représentant la position concernée
+    :return: entier représentant le numéro de la ligne de la position
+    """
+    assert type_position(pos) == True, "le paramètre n'est pas une position"
+    ligne = pos.get(LIGNE)
+    return ligne
+
+def getColonnePosition(pos: dict) -> int:
+    """
+    Fonction permettant d'obtenir le numéro de colonne d'une position
+
+    :param pos: dictionnaire représentant la position concernée
+    :return: entier représentant le numéro de la colonne de la position
+    """
+    assert type_position(pos) == True, "le paramètre n'est pas une position"
+    colonne = pos.get(COLONNE)
+    return colonne
+
+def setLignePosition(pos: dict, ligne: int) -> None:
+    """
+    Fonction permettant de modifier la valeur de la ligne de la position avec un entier
+
+    :param pos: dictionnaire représentant la position concernée
+    :param ligne: entier remplaçant le numéro de ligne de la position
+    :return: None
+    """
+    assert type_position(pos) == True and type(ligne) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
+    pos[LIGNE] = ligne
+    return None
+
+def setColonnePosition(pos: dict, colonne: int) -> None:
+    """
+    Fonction permettant de modifier la valeur de la colonne de la position avec un entier
+
+    :param pos: dictionnaire représentant la position concernée
+    :param colonne: entier remplaçant le numéro de colonne de la position
+    :return: None
+    """
+    assert type_position(pos) == True and type(colonne) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
+    pos[COLONNE] = colonne
+    return colonne
+
+def incLignePosition(pos: dict, valeur: int = 1) -> None:
+    """
+    Fonction permettant d'incrémenter une valeur au numéro de ligne d'une position
+
+    :param pos: dictionnaire représentant la position concernée
+    :param valeur: entier à incrémenter au numéro de ligne de la position
+    :return: None
+    """
+    assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
+    pos[LIGNE] += valeur
+    return None
+
+def incColonnePosition(pos: dict, valeur: int = 1) -> None:
+    """
+    Fonction permettant d'incrémenter une valeur au numéro de colonne d'une position
+
+    :param pos: dictionnaire représentant la position concernée
+    :param valeur: entier à incrémenter au numéro de colonne de la position
+    :return: None
+    """
+    assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
+    pos[COLONNE] += valeur
+    return None
+
+def decLignePosition(pos: dict, valeur: int = 1) -> None:
+    """
+    Fonction permettant de décrémenter une valeur au numéro de ligne d'une position
+
+    :param pos: dictionnaire représentant la position concernée
+    :param valeur: entier à décrémenter au numéro de ligne de la position
+    :return: None
+    """
+    assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
+    pos[LIGNE] -= valeur
+    return None
+
+def decColonnePosition(pos: dict, valeur: int = 1) -> None:
+    """
+    Fonction permettant de décrémenter une valeur au numéro de colonne d'une position
+
+    :param pos: dictionnaire représentant la position concernée
+    :param valeur: entier à décrémenter au numéro de colonne de la position
+    :return: None
+    """
+    assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
+    pos[COLONNE] -= valeur
+    return None
