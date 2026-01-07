@@ -1,7 +1,7 @@
 # Model/Nonogram.py
 from Model.Bloc import COULEUR, construireBloc
-from Model.Cellule import getCouleurCellule, isVideCellule
-from Model.CustomTypes import ModelImage, LstBlocs
+from Model.Cellule import getCouleurCellule, isVideCellule, isVuCellule, setNonVuCellule
+from Model.CustomTypes import ModelImage, LstBlocs, PlayerImage
 from Model.Image import getCellImage, type_image_light
 
 
@@ -88,3 +88,32 @@ def getBlocsColonnes(image: ModelImage) -> LstBlocs:
         blocsColonne = compterBlocsSurColonne(image, j)
         blocs.append(blocsColonne)
     return blocs
+
+def isVuImage(image: PlayerImage) -> bool:
+    """
+    Fonction permettant de savoir si toutes les cellules de l'image ont été découvertes par le joueur
+
+    :param image: image du joueur
+    :return: True si toutes les cellules sont découvertes, False sinon
+    """
+    vu = True
+    i = 0
+    while vu == True and i < len(image):
+        j = 0
+        while vu == True and j < len(image[i]):
+            vu = isVuCellule(image[i][j])
+            j += 1
+        i += 1
+    return vu
+
+def reinitialiserImage(image: PlayerImage) -> None:
+    """
+    Fonction permettant de remettre toutes les cellules de l'image à l'état non-découvert
+
+    :param image: image du joueur
+    :return: None
+    """
+    for i in range(len(image)):
+        for j in range(len(image[0])):
+            image[i][j] = setNonVuCellule(image[i][j])
+    return None
