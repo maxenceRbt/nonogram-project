@@ -42,6 +42,7 @@ def construireBloc(nombre: int, couleur: int) -> Bloc:
     :param nombre: entier correspondant au nombre de cellules
     :param couleur: entier correspondant à la couleur
     :return: un dictionnaire représentant le bloc
+    :raise AssertionError: Si au moins l'un des deux paramètre n'est pas un entier ou si au moins l'un des deux paramètres n'est pas strictement positif
     """
     assert type(nombre) == int and type(couleur) == int, "Au moins l'un des deux paramètres n'est pas un entier"
     assert nombre > 0 and couleur > 0, "Au moins l'un des deux paramètres n'est pas strictement positif"
@@ -54,6 +55,7 @@ def getNombreBloc(bloc: Bloc) -> int:
 
     :param bloc: bloc concerné
     :return: entier représentant la valeur du nombre de cellule contigües de même couleur du bloc
+    :raise AssertionError: Si le paramètre n'est pas un bloc
     """
     assert type_bloc(bloc) == True, "le paramètre n'est pas un bloc"
     nombre = bloc[NOMBRE]
@@ -65,6 +67,7 @@ def getCouleurBloc(bloc: Bloc) -> int:
 
     :param bloc: bloc concerné
     :return: entier représentant la valeur de la couleur du bloc
+    :raise AssertionError: Si le paramètre n'est pas un bloc
     """
     assert type_bloc(bloc) == True, "le paramètre n'est pas un bloc"
     couleur = bloc[COULEUR]
@@ -76,6 +79,7 @@ def isVuBloc(bloc: Bloc) -> bool:
 
     :param bloc: bloc concerné
     :return: True si le bloc a été découvert, False sinon
+    :raise AssertionError: Si le paramètre n'est pas un bloc
     """
     assert type_bloc(bloc) == True, "le paramètre n'est pas un bloc"
     vu = bloc[VU]
@@ -88,6 +92,7 @@ def setVuBloc(bloc: Bloc, vu : bool) -> None:
     :param bloc: bloc concerné
     :param vu: booléen représentant si le bloc est découvert ou non
     :return: None
+    :raise AssertionError: Si le premier paramètre n'est pas un bloc ou le second paramètre n'est pas un booléen
     """
     assert type_bloc(bloc) == True, "le premier paramètre n'est pas un bloc"
     assert type(vu) == bool, "le second paramètre n'est pas un booléen"

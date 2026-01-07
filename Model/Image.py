@@ -63,6 +63,7 @@ def getCellImage(image : Image, pos: Position) -> Cellule:
     :param image: liste 2D représentant l'image concernée
     :param pos: position concernée
     :return: Cellule de l'image
+    :raise AssertionError: Si le premier paramètre n'est pas une image ou le second n'est pas une position"
     """
     assert type_image_light(image) == True and type_position(pos) == True, "Le premier paramètre n'est pas une image ou le second n'est pas une position"
     Cell = image[pos[LIGNE]][pos[COLONNE]]
@@ -75,7 +76,8 @@ def setCellImage(image: Image, pos: Position, valeur: int|None) -> None:
     :param image: liste 2D représentant l'image concernée
     :param pos: position concernée
     :param valeur: entier représentant la nouvelle couleur
-    :return:
+    :return: None
+    :raise AssertionError: Si le premier paramètre n'est pas une image ou le second n'est pas une position ou le troisième n'est pas un entier ou "none"
     """
     assert type_image_light(image) == True and type_position(pos) == True and (type(valeur) == int or valeur is None), "Le premier paramètre n'est pas une image ou le second n'est pas une position ou le troisième n'est pas un entier"
     ligne = pos[LIGNE]
@@ -93,9 +95,10 @@ def creerImage(taille : int, liste: list[list[int]] | None = None) -> Image:
     :param taille: dimension de l'image
     :param liste: liste 2D des valeurs à ajouter
     :return: l'image créée
+    :raise AssertionError: Si le premier paramètre est inférieur à 5 ou supérieur à 20 ou si la liste n'a pas un tableau 2D carré ou n'est pas de la même taille que le premier paramètre"
     """
     assert type(taille) == int, "le premier paramètre n'est pas de type entier"
-    assert taille >= 5 and taille <= 20, "le premier paramètre est infèrieur à 5 ou supérieur à 20"
+    assert taille >= 5 and taille <= 20, "le premier paramètre est inférieur à 5 ou supérieur à 20"
     image = []
     if liste is not None:
         assert type_image_light(liste) == True

@@ -57,6 +57,7 @@ def getLignePosition(pos: dict) -> int:
 
     :param pos: dictionnaire représentant la position concernée
     :return: entier représentant le numéro de la ligne de la position
+    :raise AssertionError: si le paramètre n'est pas une position
     """
     assert type_position(pos) == True, "le paramètre n'est pas une position"
     ligne = pos.get(LIGNE)
@@ -68,6 +69,7 @@ def getColonnePosition(pos: dict) -> int:
 
     :param pos: dictionnaire représentant la position concernée
     :return: entier représentant le numéro de la colonne de la position
+    :raise AssertionError: si le paramètre n'est pas une position
     """
     assert type_position(pos) == True, "le paramètre n'est pas une position"
     colonne = pos.get(COLONNE)
@@ -80,6 +82,7 @@ def setLignePosition(pos: dict, ligne: int) -> None:
     :param pos: dictionnaire représentant la position concernée
     :param ligne: entier remplaçant le numéro de ligne de la position
     :return: None
+    :raise AssertionError: si le premier paramètre n'est pas une position ou le second n'est pas un entier
     """
     assert type_position(pos) == True and type(ligne) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
     pos[LIGNE] = ligne
@@ -92,6 +95,7 @@ def setColonnePosition(pos: dict, colonne: int) -> None:
     :param pos: dictionnaire représentant la position concernée
     :param colonne: entier remplaçant le numéro de colonne de la position
     :return: None
+    :raise AssertionError: si le premier paramètre n'est pas une position ou le second n'est pas un entier
     """
     assert type_position(pos) == True and type(colonne) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
     pos[COLONNE] = colonne
@@ -104,6 +108,7 @@ def incLignePosition(pos: dict, valeur: int = 1) -> None:
     :param pos: dictionnaire représentant la position concernée
     :param valeur: entier à incrémenter au numéro de ligne de la position
     :return: None
+    :raise AssertionError: si le premier paramètre n'est pas une position ou le second n'est pas un entier
     """
     assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
     pos[LIGNE] += valeur
@@ -116,6 +121,7 @@ def incColonnePosition(pos: dict, valeur: int = 1) -> None:
     :param pos: dictionnaire représentant la position concernée
     :param valeur: entier à incrémenter au numéro de colonne de la position
     :return: None
+    :raise AssertionError: Si le premier paramètre n'est pas une position ou le second n'est pas un entier
     """
     assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
     pos[COLONNE] += valeur
@@ -128,6 +134,7 @@ def decLignePosition(pos: dict, valeur: int = 1) -> None:
     :param pos: dictionnaire représentant la position concernée
     :param valeur: entier à décrémenter au numéro de ligne de la position
     :return: None
+    :raise AssertionError: Si le premier paramètre n'est pas une position ou le second n'est pas un entier
     """
     assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
     pos[LIGNE] -= valeur
@@ -140,6 +147,7 @@ def decColonnePosition(pos: dict, valeur: int = 1) -> None:
     :param pos: dictionnaire représentant la position concernée
     :param valeur: entier à décrémenter au numéro de colonne de la position
     :return: None
+    :raise AssertionError: Si le premier paramètre n'est pas une position ou le second n'est pas un entier
     """
     assert type_position(pos) == True and type(valeur) == int, "le premier paramètre n'est pas une position ou le second n'est pas un entier"
     pos[COLONNE] -= valeur
