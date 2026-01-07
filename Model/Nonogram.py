@@ -1,5 +1,5 @@
 # Model/Nonogram.py
-from Model.Bloc import COULEUR, construireBloc
+from Model.Bloc import *
 from Model.Cellule import getCouleurCellule, isVideCellule, isVuCellule, setNonVuCellule
 from Model.CustomTypes import ModelImage, LstBlocs, PlayerImage
 from Model.Image import getCellImage, type_image_light
@@ -98,9 +98,11 @@ def isVuImage(image: PlayerImage) -> bool:
     """
     vu = True
     i = 0
+    print(image)
     while vu == True and i < len(image):
         j = 0
         while vu == True and j < len(image[i]):
+            print(image[i][j])
             vu = isVuCellule(image[i][j])
             j += 1
         i += 1
@@ -114,6 +116,6 @@ def reinitialiserImage(image: PlayerImage) -> None:
     :return: None
     """
     for i in range(len(image)):
-        for j in range(len(image[0])):
-            image[i][j] = setNonVuCellule(image[i][j])
+        for j in range(len(image[i])):
+            setNonVuCellule(image[i][j])
     return None
