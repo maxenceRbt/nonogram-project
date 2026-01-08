@@ -327,3 +327,36 @@ def getCellsNonVuesColonneImage(image: PlayerImage, num_col: int) -> list[int]:
         if not isVuCellule(cell):
             nonVu.append(i)
     return nonVu
+
+
+def getNbParCouleur(dim: int, blocs: LstLstBlocs) -> NbParCouleur:
+    nbParCouleur = {}
+    nbrCelluleCouleur = 0
+    for i in range(len(blocs)):
+        for j in range(len(blocs[i])):
+            if blocs[i][j][COULEUR] not in nbParCouleur:
+                nbParCouleur[blocs[i][j][COULEUR]] = blocs[i][j][NOMBRE]
+            else:
+                nbParCouleur[blocs[i][j][COULEUR]] += blocs[i][j][NOMBRE]
+            nbrCelluleCouleur += blocs[i][j][NOMBRE]
+    nbrCelluleVide = (dim*dim) - nbrCelluleCouleur
+    nbParCouleur[0] = nbrCelluleVide
+    return nbParCouleur
+
+
+def getCouleursVuImage(image: PlayerImage, nbParCouleur: NbParCouleur) -> list[int]:
+    coulVu = []
+    cellVu = {}
+    for i in range(len(image)):
+        for j in range(len(image[i])):
+            cellule = image[i][j]
+            if isVuCellule(cellule):
+                couleur = getCouleurCellule(cellule)
+                if couleur in cellVu:
+                    cellVu[couleur] = cellVu[couleur] + 1
+                else:
+                    cellVu[couleur] = 1
+    for couleur, total_attendu in nbParCouleur.items():
+        if couleur in cellVu and cellVu[couleur] == total_attendu:
+            coulVu.append(couleur)
+    return coulVu
