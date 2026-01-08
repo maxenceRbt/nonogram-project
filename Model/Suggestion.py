@@ -29,4 +29,42 @@ def type_suggestion(suggestion: Suggestion) -> bool:
         return False
     return True
 
+#=============== DEBUT DU CODE ===================================
 
+def construireSuggestion(pos: Position, couleur: int) -> Suggestion:
+    """
+    Fonction permettant de construire une suggestion avec une position et une couleur donnée
+
+    :param pos: position de la suggestion
+    :param couleur: couleur à placer
+    :return: un dictionnaire représentant la suggestion
+    :raise AssertionError: Si pos n'est pas une position ou si couleur n'est pas un entier
+    """
+    assert type_position(pos), "le premier paramètre n'est pas une position"
+    assert type(couleur) is int, "le second paramètre n'est pas un entier"
+    suggestion = {"position": pos, "couleur": couleur}
+    return suggestion
+
+def getPositionSuggestion(suggestion: Suggestion) -> Position:
+    """
+    Fonction permettant d'obtenir la position de la suggestion
+
+    :param suggestion: suggestion concernée
+    :return: un dictionnaire représentant la position de la suggestion
+    :raise AssertionError: Si suggestion n'est pas une suggestion
+    """
+    assert type_suggestion(suggestion), "Le paramètre n'est pas une position"
+    posSug = suggestion[POSITION]
+    return posSug
+
+def getCouleurSuggestion(suggestion : Suggestion) -> int:
+    """
+    Fonction permettant d'obtenir la couleur de la suggestion
+
+    :param suggestion: suggestion concernée
+    :return: la valeur de la couleur de la suggestion
+    :raise AssertionError: Si suggestion n'est pas une suggestion
+    """
+    assert type_suggestion(suggestion), "le paramètre n'est pas une position"
+    coulSug = suggestion[COULEUR]
+    return coulSug
