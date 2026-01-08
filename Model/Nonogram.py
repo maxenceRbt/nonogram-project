@@ -280,3 +280,25 @@ def verifierBlocsColonneImage(image: PlayerImage, listeBloc: LstBlocs, colonne: 
                     else:
                         vu = False
     return etatModif
+
+
+def isLigneDecouverteImage(image: PlayerImage, listeBloc: LstBlocs, ligne: int = 0) -> bool:
+    vu = True
+    idxBloc = 0
+    while idxBloc < len(listeBloc) and vu:
+        if not isVuBloc(listeBloc[idxBloc]):
+            vu = False
+        else:
+            idxBloc += 1
+    return vu
+
+
+def getCellsNonVuesLigneImage(image: PlayerImage, ligne: int) -> LstBlocs:
+    nonVu = []
+    pos = construirePosition()
+    setLignePosition(pos, ligne)
+    for i in range(len(image[ligne])):
+        setColonnePosition(pos, i)
+        if not isVuCellJoueur(image, pos):
+            nonVu.append(i)
+    return nonVu
