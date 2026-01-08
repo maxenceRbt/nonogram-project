@@ -1,7 +1,9 @@
 # Model/Nonogram.py
+from pygame.examples.cursors import image
+
 from Model.Bloc import *
 from Model.Cellule import *
-from Model.CustomTypes import ModelImage, LstBlocs, PlayerImage
+from Model.CustomTypes import *
 from Model.Image import getCellImage, type_image_light
 from Model.Joueur import *
 
@@ -293,12 +295,35 @@ def isLigneDecouverteImage(image: PlayerImage, listeBloc: LstBlocs, ligne: int =
     return vu
 
 
-def getCellsNonVuesLigneImage(image: PlayerImage, ligne: int) -> LstBlocs:
+def getCellsNonVuesLigneImage(image: PlayerImage, ligne: int) -> list[int]:
     nonVu = []
     pos = construirePosition()
     setLignePosition(pos, ligne)
     for i in range(len(image[ligne])):
         setColonnePosition(pos, i)
-        if not isVuCellJoueur(image, pos):
+        cell = getCellImage(image, pos)
+        if not isVuCellule(cell):
+            nonVu.append(i)
+    return nonVu
+
+
+def isColonneDecouverteImage(image: PlayerImage, listeBloc: LstBlocs, colonne: int = 0) -> bool:
+    vu = True
+    idxBloc = 0
+    while idxBloc < len(listeBloc):
+        if not isVuBloc(listeBloc[idxBloc]):
+            vu = False
+        idxBloc += 1
+    return vu
+
+
+def getCellsNonVuesColonneImage(image: PlayerImage, num_col: int) -> list[int]:
+    nonVu= []
+    pos = construirePosition()
+    setColonnePosition(pos, num_col)
+    for i in range(len(image)):
+        setLignePosition(pos, i)
+        cell = getCellImage(image, pos)
+        if not isVuCellule(cell):
             nonVu.append(i)
     return nonVu
