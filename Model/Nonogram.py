@@ -3,7 +3,7 @@ from Model.Bloc import *
 from Model.Cellule import *
 from Model.CustomTypes import ModelImage, LstBlocs, PlayerImage
 from Model.Image import getCellImage, type_image_light
-
+from Model.Joueur import *
 
 def compterBlocsSurLigne(image: ModelImage, ligne: int = 0) -> LstBlocs:
     """
@@ -98,11 +98,9 @@ def isVuImage(image: PlayerImage) -> bool:
     """
     vu = True
     i = 0
-    print(image)
     while vu == True and i < len(image):
         j = 0
         while vu == True and j < len(image[i]):
-            print(image[i][j])
             vu = isVuCellule(image[i][j])
             j += 1
         i += 1
@@ -120,69 +118,7 @@ def reinitialiserImage(image: PlayerImage) -> None:
             setNonVuCellule(image[i][j])
     return None
 
-def vuGauche(image: PlayerImage, listeBloc: LstBlocs, ligne: int) -> bool:
-    """
-    Fonction permettant de vérifier si les blocs sur une ligne donnée ont été découvert à gauche du bloc sélectionné
-
-    :param image: image du joueur
-    :param listeBloc: liste des blocs
-    :param ligne: ligne sélectionnée
-    :return: True si tous les blocs à gauche du blocs découvert sont découvert, False sinon
-    """
-    reponse = False
-    vu_gauche = True
-    i = 0
-    idxBloc = 0
-    while i < len(image[ligne]) and idxBloc < len(listeBloc) and vu_gauche:
-        if not isVuCellule(image[ligne][i]):
-            vu_gauche = False
-        elif image[ligne][i][VALEUR] == getCouleurBloc(listeBloc[idxBloc]):
-            bloc_vu = True
-            j = 0
-            while bloc_vu and j < listeBloc[idxBloc][NOMBRE] and i+j < len(image):
-                if not isVuCellule(image[ligne][i+j]):
-                    bloc_vu = False
-                j += 1
-            if bloc_vu:
-                setVuBloc(listeBloc[idxBloc], True)
-                reponse = True
-                i += j
-            idxBloc += 1
-        i += 1
-    return reponse
-
-def vuDroite(image: PlayerImage, listeBloc: LstBlocs, ligne: int) -> bool:
-    """
-    Fonction permettant de vérifier si les blocs sur une ligne donnée ont été découvert à droite du bloc sélectionné
-
-    :param image: image du joueur
-    :param listeBloc: liste des blocs
-    :param ligne: ligne sélectionnée
-    :return: True si tous les blocs à droite du blocs découvert sont découvert, False sinon
-    """
-    reponse = False
-    vu_droite = True
-    i = len(image[ligne]) - 1
-    idxBloc = len(listeBloc) - 1
-    while i > 0 and idxBloc > 0 and vu_droite:
-        if not isVuCellule(image[ligne][i]):
-            vu_droite = False
-        elif getCouleurCellule(image[ligne][i])== getCouleurBloc(listeBloc[idxBloc]):
-            bloc_vu = True
-            j = getNombreBloc(listeBloc[idxBloc]) -1
-            while bloc_vu and j >= 0:
-                if not isVuCellule(image[ligne][i-j]):
-                    bloc_vu = False
-                j -= 1
-            if bloc_vu:
-                setVuBloc(listeBloc[idxBloc], True)
-                reponse = True
-            idxBloc -= 1
-        i -= 1
-    return reponse
-
-
-def verifierBlocsLigneImage(image: PlayerImage, listeBloc: LstBlocs, ligne: int) -> bool:
+def verifierBlocsLigneImage(image: PlayerImage, listeBloc: LstBlocs, ligne: int = 0) -> bool:
     """
     Fonction permettant de vérifier si les blocs sur une ligne donnée d'une image ont été découvert à gauche et à droite
 
@@ -191,73 +127,81 @@ def verifierBlocsLigneImage(image: PlayerImage, listeBloc: LstBlocs, ligne: int)
     :param ligne: ligne concernée
     :return: True si les blocs ont été découvert, False sinon
     """
-    reponse = False
-    if vuGauche(image, listeBloc, ligne) or vuDroite(image, listeBloc, ligne):
-        reponse = True
-    return reponse
-
-def vuHaut(image: PlayerImage, listeBloc: LstBlocs, col: int) -> bool:
-    """
-    Fonction permettant de vérifier si les blocs d'une colonne donnée sont découvert en haut du bloc sélectionné
-
-    :param image: image du joueur
-    :param listeBloc: liste des blocs
-    :param col: colonne concernée
-    :return: True si tous les blocs en haut du bloc sont découvert, False sinon
-    """
-    reponse = False
-    vu_haut = True
-    i = 0
+    taille_ligne = len(image[ligne])
+    etatModif = False
+    idxCell = 0
     idxBloc = 0
-    while i < len(image) and idxBloc < len(listeBloc) and vu_haut:
-        if not isVuCellule(image[i][col]):
-            vu_haut = False
-        elif image[i][col][VALEUR] == getCouleurBloc(listeBloc[idxBloc]):
-            bloc_vu = True
-            j = 0
-            while bloc_vu and j < listeBloc[idxBloc][NOMBRE] and i+j < len(image):
-                if not isVuCellule(image[i+j][col]):
-                    bloc_vu = False
-                j += 1
-            if bloc_vu:
-                setVuBloc(listeBloc[idxBloc], True)
-                reponse = True
-                i += j
-            idxBloc += 1
-        i += 1
-    return reponse
+    vu = True
+    while vu and idxCell < taille_ligne and idxBloc < len(listeBloc):
+        cell = image[ligne][idxCell]
+        if not isVuCellule(cell):
+            vu = False
+        else:
+            couleur = getCouleurCellule(cell)
+            if couleur == 0:
+                idxCell += 1
+            else :
+                bloc = listeBloc[idxBloc]
+                if getCouleurBloc(bloc)  != couleur:
+                    vu = False
+                else :
+                    taille = getNombreBloc(bloc)
+                    complet = True
+                    if idxCell + taille > taille_ligne:
+                        complet = False
+                    j = 0
+                    while j < taille and complet:
+                        if not isVuCellule(image[ligne][idxCell+j]) or getCouleurCellule(image[ligne][idxCell+j]) != couleur:
+                            complet = False
+                        j += 1
+                    if complet:
+                        if not isVuBloc(bloc):
+                            setVuBloc(bloc, True)
+                            etatModif = True
+                        idxCell += taille
+                        idxBloc += 1
+                    else:
+                        vu = False
 
-def vuBas(image: PlayerImage, listeBloc: LstBlocs, col: int) -> bool:
-    """
-    Fonction permettant de vérifier si les blocs d'une colonne donnée sont découvert en bas du bloc sélectionné
-
-    :param image: image du joueur
-    :param listeBloc: liste des blocs
-    :param col: colonne concernée
-    :return: True si tous les blocs en bas du bloc sont découvert, False sinon
-    """
-    reponse = False
-    vu_bas = True
-    i = len(image) - 1
+    idxCell = taille_ligne - 1
     idxBloc = len(listeBloc) - 1
-    while i >= 0 and idxBloc >= 0 and vu_bas:
-        if not isVuCellule(image[i][col]):
-            vu_bas = False
-        elif getCouleurCellule(image[i][col]) == getCouleurBloc(listeBloc[idxBloc]):
-            bloc_vu = True
-            j = getNombreBloc(listeBloc[idxBloc]) - 1
-            while bloc_vu and j >= 0:
-                if not isVuCellule(image[i-j][col]):
-                    bloc_vu = False
-                j -= 1
-            if bloc_vu:
-                setVuBloc(listeBloc[idxBloc], True)
-                reponse = True
-            idxBloc -= 1
-        i -= 1
-    return reponse
+    vu = True
+    while vu and idxCell >= 0 and idxBloc >= 0:
+        cell = image[ligne][idxCell]
+        if not isVuCellule(cell):
+            vu = False
+        else:
+            couleur = getCouleurCellule(cell)
+            if couleur == 0:
+                idxCell -= 1
+            else:
+                bloc = listeBloc[idxBloc]
+                if getCouleurBloc(bloc) != couleur:
+                    vu = False
+                else:
+                    taille = getNombreBloc(bloc)
+                    complet = True
 
-def verifierBlocsColonneImage(image: PlayerImage, listeBloc: LstBlocs, colonne: int) -> bool:
+                    if idxCell - taille + 1 < 0:
+                        complet = False
+                    j = 0
+                    while j < taille and complet:
+                        if not isVuCellule(image[ligne][idxCell-j]) or getCouleurCellule(image[ligne][idxCell-j]) != couleur:
+                            complet = False
+                        j += 1
+                    if complet:
+                        if not isVuBloc(bloc):
+                            setVuBloc(bloc, True)
+                            etatModif = True
+                        idxCell -= taille
+                        idxBloc -= 1
+                    else:
+                        vu = False
+    return etatModif
+
+
+
+def verifierBlocsColonneImage(image: PlayerImage, listeBloc: LstBlocs, colonne: int = 0) -> bool:
     """
     Fonction permettant de vérifier si les blocs sur une colonne donnée d'une image ont été découvert en haut et en bas
 
@@ -266,7 +210,73 @@ def verifierBlocsColonneImage(image: PlayerImage, listeBloc: LstBlocs, colonne: 
     :param ligne: ligne concernée
     :return: True si les blocs ont été découvert, False sinon
     """
-    reponse = False
-    if vuHaut(image, listeBloc, colonne) or vuBas(image, listeBloc, colonne):
-        reponse = True
-    return reponse
+    taille_Col = len(image)
+    etatModif = False
+    idxCell = 0
+    idxBloc = 0
+    vu = True
+
+    while vu and idxCell < taille_Col and idxBloc < len(listeBloc):
+        cell = image[idxCell][colonne]
+        if not isVuCellule(cell):
+            vu = False
+        else:
+            couleur = getCouleurCellule(cell)
+            if couleur == 0:
+                idxCell += 1
+            else:
+                bloc = listeBloc[idxBloc]
+                if getCouleurBloc(bloc) != couleur:
+                    vu = False
+                else:
+                    taille = getNombreBloc(bloc)
+                    complet = True
+                    if idxCell + taille > taille_Col:
+                        complet = False
+                    j = 0
+                    while j < taille and complet:
+                        if not isVuCellule(image[idxCell+j][colonne]) or getCouleurCellule(image[idxCell+j][colonne]) != couleur:
+                            complet = False
+                        j += 1
+                    if complet:
+                        if not isVuBloc(bloc):
+                            setVuBloc(bloc, True)
+                            etatModif = True
+                        idxCell += taille
+                        idxBloc += 1
+                    else:
+                        vu = False
+    idxcell = taille_Col - 1
+    idxBloc = len(listeBloc) - 1
+    vu = True
+    while vu and idxcell >= 0 and idxBloc >= 0:
+        cell = image[idxcell][colonne]
+        if not isVuCellule(cell):
+            vu = False
+        else:
+            couleur = getCouleurCellule(cell)
+            if couleur == 0:
+                idxcell -= 1
+            else:
+                bloc = listeBloc[idxBloc]
+                if getCouleurBloc(bloc) != couleur:
+                    vu = False
+                else:
+                    taille = getNombreBloc(bloc)
+                    complet = True
+                    if idxCell - taille + 1 < 0:
+                        complet = False
+                    j = 0
+                    while j < taille and complet and idxCell < 0:
+                        if not isVuCellule(image[idxCell - j][colonne]) or getCouleurCellule(image[idxCell - j][colonne]) != couleur:
+                            complet = False
+                        j += 1
+                    if complet:
+                        if not isVuBloc(bloc):
+                            setVuBloc(bloc, True)
+                            etatModif = True
+                        idxCell -= taille
+                        idxBloc -= 1
+                    else:
+                        vu = False
+    return etatModif
