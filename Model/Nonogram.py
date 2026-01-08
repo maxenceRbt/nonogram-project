@@ -1,6 +1,6 @@
 # Model/Nonogram.py
 from Model.Bloc import *
-from Model.Cellule import getCouleurCellule, isVideCellule, isVuCellule, setNonVuCellule
+from Model.Cellule import *
 from Model.CustomTypes import ModelImage, LstBlocs, PlayerImage
 from Model.Image import getCellImage, type_image_light
 
@@ -119,3 +119,154 @@ def reinitialiserImage(image: PlayerImage) -> None:
         for j in range(len(image[i])):
             setNonVuCellule(image[i][j])
     return None
+
+def vuGauche(image: PlayerImage, listeBloc: LstBlocs, ligne: int) -> bool:
+    """
+    Fonction permettant de vérifier si les blocs sur une ligne donnée ont été découvert à gauche du bloc sélectionné
+
+    :param image: image du joueur
+    :param listeBloc: liste des blocs
+    :param ligne: ligne sélectionnée
+    :return: True si tous les blocs à gauche du blocs découvert sont découvert, False sinon
+    """
+    reponse = False
+    vu_gauche = True
+    i = 0
+    idxBloc = 0
+    while i < len(image[ligne]) and idxBloc < len(listeBloc) and vu_gauche:
+        if not isVuCellule(image[ligne][i]):
+            vu_gauche = False
+        elif image[ligne][i][VALEUR] == getCouleurBloc(listeBloc[idxBloc]):
+            bloc_vu = True
+            j = 0
+            while bloc_vu and j < listeBloc[idxBloc][NOMBRE] and i+j < len(image):
+                if not isVuCellule(image[ligne][i+j]):
+                    bloc_vu = False
+                j += 1
+            if bloc_vu:
+                setVuBloc(listeBloc[idxBloc], True)
+                reponse = True
+                i += j
+            idxBloc += 1
+        i += 1
+    return reponse
+
+def vuDroite(image: PlayerImage, listeBloc: LstBlocs, ligne: int) -> bool:
+    """
+    Fonction permettant de vérifier si les blocs sur une ligne donnée ont été découvert à droite du bloc sélectionné
+
+    :param image: image du joueur
+    :param listeBloc: liste des blocs
+    :param ligne: ligne sélectionnée
+    :return: True si tous les blocs à droite du blocs découvert sont découvert, False sinon
+    """
+    reponse = False
+    vu_droite = True
+    i = len(image[ligne]) - 1
+    idxBloc = len(listeBloc) - 1
+    while i > 0 and idxBloc > 0 and vu_droite:
+        if not isVuCellule(image[ligne][i]):
+            vu_droite = False
+        elif getCouleurCellule(image[ligne][i])== getCouleurBloc(listeBloc[idxBloc]):
+            bloc_vu = True
+            j = getNombreBloc(listeBloc[idxBloc]) -1
+            while bloc_vu and j >= 0:
+                if not isVuCellule(image[ligne][i-j]):
+                    bloc_vu = False
+                j -= 1
+            if bloc_vu:
+                setVuBloc(listeBloc[idxBloc], True)
+                reponse = True
+            idxBloc -= 1
+        i -= 1
+    return reponse
+
+
+def verifierBlocsLigneImage(image: PlayerImage, listeBloc: LstBlocs, ligne: int) -> bool:
+    """
+    Fonction permettant de vérifier si les blocs sur une ligne donnée d'une image ont été découvert à gauche et à droite
+
+    :param image: image du joueur
+    :param listeBloc: liste des blocs
+    :param ligne: ligne concernée
+    :return: True si les blocs ont été découvert, False sinon
+    """
+    reponse = False
+    if vuGauche(image, listeBloc, ligne) or vuDroite(image, listeBloc, ligne):
+        reponse = True
+    return reponse
+
+def vuHaut(image: PlayerImage, listeBloc: LstBlocs, col: int) -> bool:
+    """
+    Fonction permettant de vérifier si les blocs d'une colonne donnée sont découvert en haut du bloc sélectionné
+
+    :param image: image du joueur
+    :param listeBloc: liste des blocs
+    :param col: colonne concernée
+    :return: True si tous les blocs en haut du bloc sont découvert, False sinon
+    """
+    reponse = False
+    vu_haut = True
+    i = 0
+    idxBloc = 0
+    while i < len(image) and idxBloc < len(listeBloc) and vu_haut:
+        if not isVuCellule(image[i][col]):
+            vu_haut = False
+        elif image[i][col][VALEUR] == getCouleurBloc(listeBloc[idxBloc]):
+            bloc_vu = True
+            j = 0
+            while bloc_vu and j < listeBloc[idxBloc][NOMBRE] and i+j < len(image):
+                if not isVuCellule(image[i+j][col]):
+                    bloc_vu = False
+                j += 1
+            if bloc_vu:
+                setVuBloc(listeBloc[idxBloc], True)
+                reponse = True
+                i += j
+            idxBloc += 1
+        i += 1
+    return reponse
+
+def vuBas(image: PlayerImage, listeBloc: LstBlocs, col: int) -> bool:
+    """
+    Fonction permettant de vérifier si les blocs d'une colonne donnée sont découvert en bas du bloc sélectionné
+
+    :param image: image du joueur
+    :param listeBloc: liste des blocs
+    :param col: colonne concernée
+    :return: True si tous les blocs en bas du bloc sont découvert, False sinon
+    """
+    reponse = False
+    vu_bas = True
+    i = len(image) - 1
+    idxBloc = len(listeBloc) - 1
+    while i >= 0 and idxBloc >= 0 and vu_bas:
+        if not isVuCellule(image[i][col]):
+            vu_bas = False
+        elif getCouleurCellule(image[i][col]) == getCouleurBloc(listeBloc[idxBloc]):
+            bloc_vu = True
+            j = getNombreBloc(listeBloc[idxBloc]) - 1
+            while bloc_vu and j >= 0:
+                if not isVuCellule(image[i-j][col]):
+                    bloc_vu = False
+                j -= 1
+            if bloc_vu:
+                setVuBloc(listeBloc[idxBloc], True)
+                reponse = True
+            idxBloc -= 1
+        i -= 1
+    return reponse
+
+def verifierBlocsColonneImage(image: PlayerImage, listeBloc: LstBlocs, colonne: int) -> bool:
+    """
+    Fonction permettant de vérifier si les blocs sur une colonne donnée d'une image ont été découvert en haut et en bas
+
+    :param image: image du joueur
+    :param listeBloc: liste des blocs
+    :param ligne: ligne concernée
+    :return: True si les blocs ont été découvert, False sinon
+    """
+    reponse = False
+    if vuHaut(image, listeBloc, colonne) or vuBas(image, listeBloc, colonne):
+        reponse = True
+    return reponse
