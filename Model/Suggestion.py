@@ -42,7 +42,7 @@ def construireSuggestion(pos: Position, couleur: int) -> Suggestion:
     """
     assert type_position(pos), "le premier paramètre n'est pas une position"
     assert type(couleur) is int, "le second paramètre n'est pas un entier"
-    suggestion = {"position": pos, "couleur": couleur}
+    suggestion = {POSITION: pos, COULEUR: couleur}
     return suggestion
 
 def getPositionSuggestion(suggestion: Suggestion) -> Position:
