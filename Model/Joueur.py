@@ -199,3 +199,238 @@ def appliquerMonoRecouvrement(image: PlayerImage, blocsLignes: LstLstBlocs, bloc
             k += 1
         j += 1
     return suggestionsTotal
+
+
+def isRangeeVide(rangee: Rangee) -> bool:
+    """
+    Fonction permettant de déterminer si une rangée est vide
+
+    :param rangee: rangee choisit
+    :return: True si la rangee est vide, False sinon
+    """
+    vide = True
+    i = 0
+    # On parcourt la rangée tant qu'on n'a pas trouvé de cellule vue
+    while i < len(rangee) and vide:
+        if isVuCellule(rangee[i]):
+            vide = False
+        i += 1
+
+    return vide
+
+def isRangeeDecouverte(rangee: Rangee) -> bool:
+    """
+    Fonction permettant de savoir si une rangee est découverte
+
+    :param rangee: rangee concernée
+    :return: True si la rangee est découverte, False sinon
+    """
+    vu = True
+    i = 0
+    while isVuCellule(rangee[i]) and i < len(rangee):
+        i += 1
+    if not isVuCellule(rangee[i]):
+        vu = False
+    return vu
+
+
+def appliquerMonoGlueBordRangee(rangee: Rangee, blocs: LstBlocs) -> LstIndexCouleurs:
+    """
+    Fonction appliquant le principe de glue des bords sur une rangee donnée
+
+    :param rangee: rangee concernée
+    :param blocs: liste des blocs de la rangee
+    :return: une liste de tuple avec l'index et couleurs des suggestions trouvées
+    """
+    suggestions = []
+    if len(blocs) > 0 and not isRangeeVide(rangee) and not isRangeeDecouverte(rangee):
+        i = 0
+        cellVu = False
+        while i < len(rangee) and not cellVu:
+            if isVuCellule(rangee[i]):
+                cellVu = True
+            else:
+                i += 1
+        if cellVu:
+            celluleVue = rangee[i]
+            premierBloc = blocs[0]
+            tailleBloc = getNombreBloc(premierBloc)
+            couleurBloc = getCouleurBloc(premierBloc)
+            if getCouleurCellule(celluleVue) != 0 and i < tailleBloc:
+                k = 0
+                while k < tailleBloc:
+                    if not isVuCellule(rangee[k]):
+                        suggestions.append((k, couleurBloc))
+                    k += 1
+                if tailleBloc < len(rangee):
+                    if not isVuCellule(rangee[tailleBloc]):
+                        suggestions.append((tailleBloc, 0))
+    return suggestions
+
+def indexCouleursToSuggestions(indexCouleurs: LstIndexCouleurs, ligCol: int, isLigne: bool) -> LstSuggestions:
+    """
+    Fonction permettant de construire une liste de suggestions à partir d'une liste de tuple d'index et couleurs
+
+    :param indexCouleurs: liste d'index
+    :param ligCol: numéro de ligne / colonne
+    :param isLigne: Savoir si ligCol concerne une ligne ou non
+    :return: une liste de suggestions avec leurs positions
+    """
+    suggestions = []
+    position = construirePosition()
+    if isLigne:
+        ligne = ligCol
+        setLignePosition(position, ligne)
+        for i in range(len(indexCouleurs)):
+            setColonnePosition(position, indexCouleurs[i][0])
+            suggestions.append(construireSuggestion(position, indexCouleurs[i][1]))
+    else:
+        col = ligCol
+        setColonnePosition(position, col)
+        for i in range(len(indexCouleurs)):
+            setLignePosition(position, indexCouleurs[i][0])
+            suggestions.append(construireSuggestion(position, indexCouleurs[i][1]))
+    return suggestions
+
+def getLigneImage(image: PlayerImage, li: int) -> Rangee:
+    """
+    Fonction permettant d'obtenir la rangée d'une ligne donnée dans une image
+
+    :param image: image du joueur
+    :param li: ligne choisit
+    :return: la rangée de la ligne choisit
+    """
+    ligneImage = image[li]
+    return ligneImage
+
+def getLigneInverseImage(image: PlayerImage, li: int) -> Rangee:
+    """
+    Fonction permettant d'inverser la rangée d'une ligne dans une image
+
+    :param image: image du joueur
+    :param li: ligne choisit
+    :return: la rangée inversée
+    """
+    ligneImage = image[li]
+    ligneImage.reverse()
+    return ligneImage
+
+def getLstBlocsInverse(blocs: LstBlocs) -> LstBlocs:
+    """
+    Fonction permettant d'obtenir l'inverse d'une liste de blocs
+
+    :param blocs: liste de blocs choisit
+    :return: une liste de blocs étant l'inverse de la liste passée en paramètre
+    """
+    listeBlocs = blocs
+    listeBlocs.reverse()
+    return listeBlocs
+
+def getColonneImage(image: PlayerImage, co: int) -> Rangee:
+    """
+    Fonction permettant d'obtenir la rangee de la colonne passé en paramètre dans une image
+
+    :param image: image du joueur
+    :param co: colonne choisit
+    :return: la rangee de la colonne
+    """
+    colonne = []
+    for i in range(len(image)):
+        colonne.append(image[i][co])
+    return colonne
+
+def getColonneInverseImage(image: PlayerImage, co: int) -> Rangee:
+    """
+    Fonction permettant d'obtenir l'inverse de la rangee d'une colonne choisit
+
+    :param image: image du joueur
+    :param co: colonne choisit
+    :return: la rangee inversée de la colonne
+    """
+    colonne = getColonneImage(image, co)
+    colonne.reverse()
+    return colonne
+
+def getIndexInverseDeIndexCouleurs(idx_color: LstIndexCouleurs, dim: int) -> LstIndexCouleurs:
+    """
+    Fonction permettant d'obtenir une liste d'index et couleurs avec les index étant inversés en fonction de la dimension de l'image
+
+    :param idx_color: liste de tuple (index, couleurs)
+    :param dim: dimension de l'image
+    :return: liste de tuple (index, couleurs) avec les nouveaux index
+    """
+    indexCouleursInv = []
+    i = 0
+    while i < len(idx_color):
+        indexInverse = idx_color[i][0]
+        couleur = idx_color[i][1]
+        indexReel = (dim - 1) - indexInverse
+        indexCouleursInv.append((indexReel, couleur))
+        i += 1
+    return indexCouleursInv
+
+
+def appliquerMonoGlueBord(image: PlayerImage, blocsLignes: LstLstBlocs, blocsColonnes: LstLstBlocs) -> LstSuggestions:
+    """
+    Fonction permettant d'appliquer la technique Glue sur les bords pour les lignes, les lignes retournées, les colonnes et les colonnes retournées
+    et d'obtenir une liste de suggestions sur toute l'image du joueur
+
+    :param image: image du joueur
+    :param blocsLignes: une liste avec les listes de chaque bloc de chaque ligne
+    :param blocsColonnes: une liste avec les listes de chaque bloc de chaque colonne
+    :return: une liste de suggestions sur l'ensemble de l'image
+    """
+    suggestions = []
+    nbrLignes = len(image)
+    nbrColonnes = len(image[0])
+    ligne = 0
+    while ligne < nbrLignes:
+        blocsLigne = blocsLignes[ligne]
+        rangeeDeb= getLigneImage(image, ligne)
+        glueDeb = appliquerMonoGlueBordRangee(rangeeDeb, blocsLigne)
+        j = 0
+        while j < len(glueDeb):
+            pos = construirePosition()
+            setLignePosition(pos, ligne)
+            setColonnePosition(pos, glueDeb[j][0])
+            suggestions.append(construireSuggestion(pos, glueDeb[j][1]))
+            j += 1
+
+        rangeeFin = getLigneInverseImage(image, ligne)
+        blocsInv = getLstBlocsInverse(blocsLigne)
+        glueFinInverse = appliquerMonoGlueBordRangee(rangeeFin, blocsInv)
+        glueFin = getIndexInverseDeIndexCouleurs(glueFinInverse, nbrColonnes)
+        j = 0
+        while j <len(glueFin):
+            pos = construirePosition()
+            setLignePosition(pos, ligne)
+            setColonnePosition(pos, glueFin[j][0])
+            suggestions.append(construireSuggestion(pos, glueFin[j][1]))
+            j += 1
+        ligne += 1
+    col = 0
+    while col < nbrColonnes:
+        blocsColonne = blocsColonnes[col]
+        rangeHaut = getColonneImage(image, col)
+        glueHaut = appliquerMonoGlueBordRangee(rangeHaut, blocsColonne)
+        j = 0
+        while j < len(glueHaut):
+            pos = construirePosition()
+            setColonnePosition(pos, col)
+            setLignePosition(pos, glueHaut[j][0])
+            suggestions.append(construireSuggestion(pos, glueHaut[j][1]))
+            j += 1
+
+        rangeBasInv = getColonneInverseImage(image, col)
+        blocsInv = getLstBlocsInverse(blocsColonne)
+        glueBasInv = appliquerMonoGlueBordRangee(rangeBasInv, blocsInv)
+        glueBas = getIndexInverseDeIndexCouleurs(glueBasInv, nbrLignes)
+        j = 0
+        while j < len(glueBas):
+            pos = construirePosition()
+            setColonnePosition(pos, col)
+            setLignePosition(pos, glueBas[j][0])
+            suggestions.append(construireSuggestion(pos, glueBas[j][1]))
+            j += 1
+        col += 1
+    return suggestions
